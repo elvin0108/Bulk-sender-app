@@ -1,0 +1,738 @@
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>WhatsApp Marketing Tool</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+        <style>
+            body { padding-top: 20px; padding-bottom: 40px; }
+            .navbar-brand { color: #128c7e; font-weight: bold; }
+            .card { margin-bottom: 20px; }
+            .card-header { background-color: #dcf8c6; }
+            .btn-whatsapp { background-color: #128c7e; color: white; }
+            .btn-whatsapp:hover { background-color: #075e54; color: white; }
+            .qr-container { text-align: center; margin: 20px 0; }
+            #qrcode-img { max-width: 250px; border: 1px solid #ddd; }
+            .tab-content { padding-top: 20px; }
+            #status-badge { font-size: 14px; margin-left: 10px; }
+            .input-group-text { background-color: #f0f0f0; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="#">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#128c7e" class="bi bi-whatsapp me-2" viewBox="0 0 16 16">
+                            <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
+                        </svg>
+                        WhatsApp Marketing Tool
+                    </a>
+                    <div>
+                        <span class="badge" id="status-badge">Checking status...</span>
+                    </div>
+                </div>
+            </nav>
+            
+            <div id="auth-section" class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">WhatsApp Authentication</h5>
+                </div>
+                <div class="card-body">
+                    <div id="qr-container" class="qr-container">
+                        <p>Loading QR code... Please wait.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="main-content" style="display: none;">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="send-tab" data-bs-toggle="tab" data-bs-target="#send" type="button" role="tab">Send Messages</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="contacts-tab" data-bs-toggle="tab" data-bs-target="#contacts" type="button" role="tab">Contacts</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="groups-tab" data-bs-toggle="tab" data-bs-target="#groups" type="button" role="tab">Groups</button>
+                    </li>
+                </ul>
+                
+                <div class="tab-content">
+                    <!-- Send Messages Tab -->
+                    <div class="tab-pane fade show active" id="send" role="tabpanel">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Send Bulk Messages</h5>
+                            </div>
+                            <div class="card-body">
+                                <form id="send-form">
+                                    <div class="mb-3">
+                                        <label for="message" class="form-label">Message Content</label>
+                                        <textarea class="form-control" id="message" rows="4" placeholder="Type your message here..."></textarea>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Recipients</label>
+                                        <ul class="nav nav-pills mb-3" id="recipients-tab">
+                                            <li class="nav-item">
+                                                <button class="nav-link active" id="manual-tab" data-bs-toggle="pill" data-bs-target="#manual-input" type="button">Manual Input</button>
+                                            </li>
+                                            <li class="nav-item">
+                                                <button class="nav-link" id="excel-tab" data-bs-toggle="pill" data-bs-target="#excel-input" type="button">Upload Excel</button>
+                                            </li>
+                                        </ul>
+                                        
+                                        <div class="tab-content">
+                                            <div class="tab-pane fade show active" id="manual-input">
+                                                <textarea class="form-control" id="numbers-input" rows="4" placeholder="Enter phone numbers with country code (no + symbol)&#10;One per line or comma-separated&#10;Example:&#10;91XXXXXXXXXX,1XXXXXXXXXX"></textarea>
+                                            </div>
+                                            <div class="tab-pane fade" id="excel-input">
+                                                <div class="input-group mb-3">
+                                                    <input type="file" class="form-control" id="excel-file" accept=".xlsx">
+                                                    <span class="input-group-text">Excel file with numbers in first column</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="media-file" class="form-label">Media Attachment (Optional)</label>
+                                        <input class="form-control" type="file" id="media-file">
+                                        <div class="form-text">Supported formats: images, videos, documents (PDF, etc.)</div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="delay" class="form-label">Delay Between Messages (seconds)</label>
+                                        <input type="number" class="form-control" id="delay" min="1" max="60" value="3">
+                                        <div class="form-text">Adding a delay reduces the risk of being blocked for spam</div>
+                                    </div>
+                                    
+                                    <button type="submit" class="btn btn-whatsapp">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send me-2" viewBox="0 0 16 16">
+                                            <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
+                                        </svg>
+                                        Send Messages
+                                    </button>
+                                </form>
+                                
+                                <div id="send-result" class="mt-3"></div>
+                                <div class="progress mt-3" style="display: none;">
+                                    <div id="send-progress" class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Contacts Tab -->
+                    <div class="tab-pane fade" id="contacts" role="tabpanel">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">Saved Contacts</h5>
+                                <button id="fetch-contacts" class="btn btn-sm btn-whatsapp">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-repeat me-1" viewBox="0 0 16 16">
+                                        <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41m-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9"/>
+                                        <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5 5 0 0 0 8 3M3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9z"/>
+                                    </svg>
+                                    Refresh
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <button id="export-contacts" class="btn btn-success">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-excel me-1" viewBox="0 0 16 16">
+                                            // This continues the HTML content from where it was cut off
+                                            <path d="M5.884 6.68a.5.5 0 1 0-.768.64L7.349 10l-2.233 2.68a.5.5 0 0 0 .768.64L8 10.64l2.116 2.68a.5.5 0 0 0 .768-.64L8.651 10l2.233-2.68a.5.5 0 0 0-.768-.64L8 9.36z"/>
+                                            <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"/>
+                                        </svg>
+                                        Export to Excel
+                                    </button>
+                                </div>
+                                <div id="contacts-container">
+                                    <p class="text-center">Click "Refresh" to fetch contacts</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Groups Tab -->
+                    <div class="tab-pane fade" id="groups" role="tabpanel">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">WhatsApp Groups</h5>
+                                <button id="fetch-groups" class="btn btn-sm btn-whatsapp">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-repeat me-1" viewBox="0 0 16 16">
+                                        <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41m-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9"/>
+                                        <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5 5 0 0 0 8 3M3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9z"/>
+                                    </svg>
+                                    Refresh
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <div id="groups-container">
+                                    <p class="text-center">Click "Refresh" to fetch groups</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="group-details" class="card mt-3" style="display: none;">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0" id="group-name">Group Members</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <button id="export-group" class="btn btn-success">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-excel me-1" viewBox="0 0 16 16">
+                                            <path d="M5.884 6.68a.5.5 0 1 0-.768.64L7.349 10l-2.233 2.68a.5.5 0 0 0 .768.64L8 10.64l2.116 2.68a.5.5 0 0 0 .768-.64L8.651 10l2.233-2.68a.5.5 0 0 0-.768-.64L8 9.36z"/>
+                                            <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"/>
+                                        </svg>
+                                        Export Members to Excel
+                                    </button>
+                                    <button id="use-group-members" class="btn btn-primary ms-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people me-1" viewBox="0 0 16 16">
+                                            <path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1zm-7.978-1L7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002-.014.002zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4m3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0M6.936 9.28a6 6 0 0 0-1.23-.247A7 7 0 0 0 5 9c-4 0-5 3-5 4q0 1 1 1h4.216A2.24 2.24 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816M4.92 10A5.5 5.5 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275ZM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0m3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4"/>
+                                        </svg>
+                                        Use Members as Recipients
+                                    </button>
+                                </div>
+                                <div id="group-members"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Alert/Toast Container -->
+            <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+                <div id="toast-container"></div>
+            </div>
+            
+        </div>
+        
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            // Global variables
+            let isClientReady = false;
+            let selectedGroupId = null;
+            let groupMembers = [];
+            let allContacts = [];
+            
+            // Function to create toast notifications
+            function showToast(message, type = 'success') {
+                const toastId = 'toast-' + Date.now();
+                const toastHtml = 
+                    `<div id="${toastId}" class="toast align-items-center text-white bg-${type} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="d-flex">
+                            <div class="toast-body">
+                                ${message}
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                    </div>`
+                ;
+                document.getElementById('toast-container').insertAdjacentHTML('beforeend', toastHtml);
+                const toastElement = document.getElementById(toastId);
+                const toast = new bootstrap.Toast(toastElement, { delay: 5000 });
+                toast.show();
+                
+                // Remove toast from DOM after it's hidden
+                toastElement.addEventListener('hidden.bs.toast', function () {
+                    toastElement.remove();
+                });
+            }
+            
+            // Function to check server and client status
+            async function checkStatus() {
+                try {
+                    const response = await fetch('/api/status');
+                    const data = await response.json();
+                    
+                    const statusBadge = document.getElementById('status-badge');
+                    if (data.whatsappStatus === 'ready') {
+                        isClientReady = true;
+                        statusBadge.textContent = 'Connected';
+                        statusBadge.className = 'badge bg-success';
+                        
+                        // Hide authentication section and show main content
+                        document.getElementById('auth-section').style.display = 'none';
+                        document.getElementById('main-content').style.display = 'block';
+                    } else {
+                        isClientReady = false;
+                        statusBadge.textContent = 'Not Connected';
+                        statusBadge.className = 'badge bg-warning';
+                        
+                        // Show authentication section and hide main content
+                        document.getElementById('auth-section').style.display = 'block';
+                        document.getElementById('main-content').style.display = 'none';
+                        
+                        // Try to fetch QR code
+                        fetchQRCode();
+                    }
+                } catch (error) {
+                    console.error('Error checking status:', error);
+                    document.getElementById('status-badge').textContent = 'Server Error';
+                    document.getElementById('status-badge').className = 'badge bg-danger';
+                }
+            }
+            
+            // Function to fetch and display QR code
+            async function fetchQRCode() {
+                try {
+                    const response = await fetch('/api/qrcode');
+                    const data = await response.json();
+                    
+                    const qrContainer = document.getElementById('qr-container');
+                    
+                    if (data.qrCode) {
+                        // Display QR code
+                        qrContainer.innerHTML = `
+                            <p>Scan this QR code with your WhatsApp to log in:</p>
+                            <img id="qrcode-img" src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(data.qrCode)}" alt="WhatsApp QR Code">
+                            <p class="mt-3 text-muted">Open WhatsApp on your phone > Settings > Linked Devices > Link a Device</p>`
+                        ;
+                    } else if (data.status === 'authenticated') {
+                        qrContainer.innerHTML = '<p class="text-success">WhatsApp is connected! You can start using the tool.</p>';
+                        setTimeout(checkStatus, 1000); // Recheck status to update UI
+                    } else {
+                        qrContainer.innerHTML = '<p>Waiting for QR code... Please refresh the page if it doesn\'t appear.</p>';
+                        setTimeout(fetchQRCode, 3000); // Try again after 3 seconds
+                    }
+                } catch (error) {
+                    console.error('Error fetching QR code:', error);
+                    document.getElementById('qr-container').innerHTML = '<p class="text-danger">Error connecting to server. Please refresh the page.</p>';
+                }
+            }
+            
+            // Function to fetch and display groups
+            async function fetchGroups() {
+                if (!isClientReady) {
+                    showToast('WhatsApp is not connected. Please scan the QR code first.', 'warning');
+                    return;
+                }
+                
+                try {
+                    const response = await fetch('/api/groups');
+                    const data = await response.json();
+                    
+                    const groupsContainer = document.getElementById('groups-container');
+                    
+                    if (data.success && data.groups && data.groups.length > 0) {
+                        let html = '<div class="list-group">';
+                        data.groups.forEach(group => {
+                            html += 
+                                `<button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center group-item" data-id="${group.id}">
+                                    ${group.name}
+                                    <span class="badge bg-primary rounded-pill">${group.participantCount} members</span>
+                                </button>`
+                            ;
+                        });
+                        html += '</div>';
+                        groupsContainer.innerHTML = html;
+                        
+                        // Add click event listeners to group items
+                        document.querySelectorAll('.group-item').forEach(item => {
+                            item.addEventListener('click', function() {
+                                const groupId = this.getAttribute('data-id');
+                                const groupName = this.textContent.trim().split(' ')[0]; // Extract group name
+                                fetchGroupMembers(groupId, groupName);
+                            });
+                        });
+                    } else {
+                        groupsContainer.innerHTML = '<p class="text-center">No groups found</p>';
+                    }
+                } catch (error) {
+                    console.error('Error fetching groups:', error);
+                    showToast('Error fetching groups. Please try again.', 'danger');
+                }
+            }
+            
+            // Function to fetch and display group members
+            async function fetchGroupMembers(groupId, groupName) {
+                if (!isClientReady) {
+                    showToast('WhatsApp is not connected. Please scan the QR code first.', 'warning');
+                    return;
+                }
+                
+                try {
+                    const response = await fetch(`/api/groups/${groupId}/contacts`);
+                    const data = await response.json();
+                    
+                    // Store selected group info
+                    selectedGroupId = groupId;
+                    
+                    // Update group name in the details section
+                    document.getElementById('group-name').textContent = `${groupName} - Members`;
+                    
+                    // Show group details section
+                    document.getElementById('group-details').style.display = 'block';
+                    
+                    const groupMembersContainer = document.getElementById('group-members');
+                    
+                    if (data.success && data.contacts && data.contacts.length > 0) {
+                        // Store group members data globally
+                        groupMembers = data.contacts;
+                        
+                        // Create table of members
+                        let html = 
+                            `<div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Number</th>
+                                            <th>Is Saved Contact</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>`
+                        ;
+                        
+                        data.contacts.forEach(contact => {
+                            html += 
+                                `<tr>
+                                    <td>${contact.name}</td>
+                                    <td>${contact.number || 'N/A'}</td>
+                                    <td>${contact.isMyContact ? '<span class="text-success">Yes</span>' : '<span class="text-danger">No</span>'}</td>
+                                </tr>`
+                            ;
+                        });
+                        
+                        html += 
+                                    `</tbody>
+                                </table>
+                            </div>`
+                        ;
+                        
+                        groupMembersContainer.innerHTML = html;
+                    } else {
+                        groupMembersContainer.innerHTML = '<p class="text-center">No members found or error fetching members</p>';
+                    }
+                } catch (error) {
+                    console.error('Error fetching group members:', error);
+                    showToast('Error fetching group members. Please try again.', 'danger');
+                }
+            }
+            
+            // Function to fetch and display contacts
+            async function fetchContacts() {
+                if (!isClientReady) {
+                    showToast('WhatsApp is not connected. Please scan the QR code first.', 'warning');
+                    return;
+                }
+                
+                try {
+                    const response = await fetch('/api/contacts');
+                    const data = await response.json();
+                    
+                    const contactsContainer = document.getElementById('contacts-container');
+                    
+                    if (data.success && data.contacts && data.contacts.length > 0) {
+                        // Store contacts globally
+                        allContacts = data.contacts;
+                        
+                        // Create table of contacts
+                        let html = 
+                            `<div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Number</th>
+                                            <th>Is Business</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>`
+                        ;
+                        
+                        data.contacts.forEach(contact => {
+                            html += 
+                                `<tr>
+                                    <td>${contact.name}</td>
+                                    <td>${contact.number || 'N/A'}</td>
+                                    <td>${contact.isBusiness ? '<span class="text-primary">Yes</span>' : 'No'}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary add-recipient" data-number="${contact.number}">
+                                            Add as Recipient
+                                        </button>
+                                    </td>
+                                </tr>`
+                            ;
+                        });
+                        
+                        html += 
+                                    `</tbody>
+                                </table>
+                            </div>`
+                        ;
+                        
+                        contactsContainer.innerHTML = html;
+                        
+                        // Add click event listeners to add recipient buttons
+                        document.querySelectorAll('.add-recipient').forEach(button => {
+                            button.addEventListener('click', function() {
+                                const phoneNumber = this.getAttribute('data-number');
+                                if (phoneNumber) {
+                                    addRecipient(phoneNumber);
+                                }
+                            });
+                        });
+                    } else {
+                        contactsContainer.innerHTML = '<p class="text-center">No contacts found</p>';
+                    }
+                } catch (error) {
+                    console.error('Error fetching contacts:', error);
+                    showToast('Error fetching contacts. Please try again.', 'danger');
+                }
+            }
+            
+            // Function to export contacts to Excel
+            async function exportContacts() {
+                if (!isClientReady) {
+                    showToast('WhatsApp is not connected. Please scan the QR code first.', 'warning');
+                    return;
+                }
+                
+                try {
+                    const response = await fetch('/api/contacts/export');
+                    const data = await response.json();
+                    
+                    if (data.success && data.downloadUrl) {
+                        // Create and click a download link
+                        const link = document.createElement('a');
+                        link.href = data.downloadUrl;
+                        link.download = data.filename;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        
+                        showToast(`Exported ${data.contactCount} contacts to Excel successfully!`);
+                    } else {
+                        showToast('Error exporting contacts', 'danger');
+                    }
+                } catch (error) {
+                    console.error('Error exporting contacts:', error);
+                    showToast('Error exporting contacts. Please try again.', 'danger');
+                }
+            }
+            
+            // Function to export group members to Excel
+            async function exportGroupMembers() {
+                if (!isClientReady || !selectedGroupId) {
+                    showToast('Please select a group first', 'warning');
+                    return;
+                }
+                
+                try {
+                    const response = await fetch(`/api/groups/${selectedGroupId}/export`);
+                    const data = await response.json();
+                    
+                    if (data.success && data.downloadUrl) {
+                        // Create and click a download link
+                        const link = document.createElement('a');
+                        link.href = data.downloadUrl;
+                        link.download = data.filename;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        
+                        showToast(`Exported ${data.contactCount} group members to Excel successfully!`);
+                    } else {
+                        showToast('Error exporting group members', 'danger');
+                    }
+                } catch (error) {
+                    console.error('Error exporting group members:', error);
+                    showToast('Error exporting group members. Please try again.', 'danger');
+                }
+            }
+            
+            // Function to add a phone number to the recipients field
+            function addRecipient(phoneNumber) {
+                const numbersInput = document.getElementById('numbers-input');
+                const currentValue = numbersInput.value.trim();
+                
+                if (currentValue) {
+                    // If there's already content, add a new line
+                    numbersInput.value = currentValue + '\n' + phoneNumber;
+                } else {
+                    // Otherwise just set the value
+                    numbersInput.value = phoneNumber;
+                }
+                
+                // Switch to the send tab and manual input
+                document.getElementById('send-tab').click();
+                document.getElementById('manual-tab').click();
+                
+                showToast(`Added ${phoneNumber} to recipients`);
+            }
+            
+            // Function to use group members as recipients
+            function useGroupMembersAsRecipients() {
+                if (!groupMembers || groupMembers.length === 0) {
+                    showToast('No group members available', 'warning');
+                    return;
+                }
+                
+                // Extract phone numbers from group members
+                const phoneNumbers = groupMembers
+                    .filter(member => member.number) // Only include members with valid numbers
+                    .map(member => member.number)
+                    .join('\n');
+                
+                // Set the numbers input
+                document.getElementById('numbers-input').value = phoneNumbers;
+                
+                // Switch to the send tab and manual input
+                document.getElementById('send-tab').click();
+                document.getElementById('manual-tab').click();
+                
+                showToast(`Added ${groupMembers.length} group members to recipients`);
+            }
+            
+            // Function to send messages
+            async function sendMessages(event) {
+                event.preventDefault();
+                
+                if (!isClientReady) {
+                    showToast('WhatsApp is not connected. Please scan the QR code first.', 'warning');
+                    return;
+                }
+                
+                const messageText = document.getElementById('message').value.trim();
+                if (!messageText) {
+                    showToast('Please enter a message', 'warning');
+                    return;
+                }
+                
+                // Get recipients
+                const numbersText = document.getElementById('numbers-input').value.trim();
+                const excelFile = document.getElementById('excel-file').files[0];
+                
+                if (!numbersText && !excelFile) {
+                    showToast('Please enter recipients or upload an Excel file', 'warning');
+                    return;
+                }
+                
+                // Get media file if any
+                const mediaFile = document.getElementById('media-file').files[0];
+                
+                // Get delay
+                const delaySeconds = parseInt(document.getElementById('delay').value) || 3;
+                
+                // Prepare form data
+                const formData = new FormData();
+                formData.append('message', messageText);
+                formData.append('delaySeconds', delaySeconds);
+                
+                if (numbersText) {
+                    formData.append('numbersText', numbersText);
+                }
+                
+                if (excelFile) {
+                    formData.append('media', excelFile);
+                }
+                
+                if (mediaFile) {
+                    formData.append('media', mediaFile);
+                }
+                
+                // Show progress
+                const progressBar = document.getElementById('send-progress');
+                const progressContainer = progressBar.parentElement;
+                progressContainer.style.display = 'block';
+                progressBar.style.width = '0%';
+                
+                try {
+                    // Send the request
+                    const response = await fetch('/api/send', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        showToast(`Starting to send messages to ${data.numbersCount} recipients`);
+                        
+                        // Show result
+                        document.getElementById('send-result').innerHTML = 
+                            `<div class="alert alert-success">
+                                <h5>Message sending in progress</h5>
+                                <p>- Sending to: ${data.numbersCount} recipients</p>
+                                <p>- Delay between messages: ${data.delaySeconds} seconds</p>
+                                <p>- Media attached: ${data.mediaAttached ? 'Yes' : 'No'}</p>
+                                <p>This process will continue in the background. You can close this page.</p>
+                            </div>`
+                        ;
+                        
+                        // Simulate progress (since we don't have real-time updates)
+                        const totalTime = data.numbersCount * data.delaySeconds * 1000;
+                        const updateInterval = 1000; // Update every second
+                        const steps = totalTime / updateInterval;
+                        let currentStep = 0;
+                        
+                        const progressTimer = setInterval(() => {
+                            currentStep++;
+                            const percentage = (currentStep / steps) * 100;
+                            
+                            if (percentage >= 100) {
+                                clearInterval(progressTimer);
+                                progressBar.style.width = '100%';
+                                progressBar.textContent = 'Complete';
+                                
+                                setTimeout(() => {
+                                    progressContainer.style.display = 'none';
+                                }, 2000);
+                                
+                                showToast('Finished sending all messages!');
+                            } else {
+                                progressBar.style.width = `${percentage}%`;
+                                progressBar.textContent = `${Math.round(percentage)}%`;
+                            }
+                        }, updateInterval);
+                    } else {
+                        showToast(`Error: ${data.error}`, 'danger');
+                        document.getElementById('send-result').innerHTML = 
+                            `<div class="alert alert-danger">
+                                <h5>Error sending messages</h5>
+                                <p>${data.error}</p>
+                            </div>`
+                        ;
+                        progressContainer.style.display = 'none';
+                    }
+                } catch (error) {
+                    console.error('Error sending messages:', error);
+                    showToast('Error sending messages. Please try again.', 'danger');
+                    progressContainer.style.display = 'none';
+                }
+            }
+            
+            // Event listeners
+            document.addEventListener('DOMContentLoaded', function() {
+                // Initial status check
+                checkStatus();
+                setInterval(checkStatus, 30000); // Check status every 30 seconds
+                
+                // Fetch groups button
+                document.getElementById('fetch-groups').addEventListener('click', fetchGroups);
+                
+                // Fetch contacts button
+                document.getElementById('fetch-contacts').addEventListener('click', fetchContacts);
+                
+                // Export contacts button
+                document.getElementById('export-contacts').addEventListener('click', exportContacts);
+                
+                // Export group members button
+                document.getElementById('export-group').addEventListener('click', exportGroupMembers);
+                
+                // Use group members as recipients button
+                document.getElementById('use-group-members').addEventListener('click', useGroupMembersAsRecipients);
+                
+                // Send form
+                document.getElementById('send-form').addEventListener('submit', sendMessages);
+            });
+        </script>
+    </body>
+    </html>
+    
