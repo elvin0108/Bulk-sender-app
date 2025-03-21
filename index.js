@@ -54,8 +54,7 @@ function initializeWhatsAppClient() {
                 clientId: 'session-' + Date.now() // Use a timestamp to create a unique session
             }),
             puppeteer: {
-                headless: true,
-                args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-web-security']
+                browserWSEndpoint: process.env.PUPPETEER_WS_ENDPOINT
             }
         });
         
